@@ -1,0 +1,56 @@
+   <!-- 内容主体区域 -->
+    <div style="padding: 15px; width:600px;">
+    	<h2 align="center"></h2>
+<form class="layui-form" action="">
+	<input type="hidden" name="admin_id" value="{$admin_id}">
+
+	<div class="layui-form-item">
+		<label class="layui-form-label">可选角色</label>
+		<fieldset class="layui-elem-field">
+			<legend>角色分类</legend>
+			<div class="layui-field-box">
+				{volist name="roleInfo" id="v"}
+					{in name="$v['role_id']" value="$adminInfo"}
+						<input type="checkbox" lay-skin="primary" checked name="role_id[]" value="{$v.role_id}" title="{$v.role_name}">
+					{else/}
+						<input type="checkbox" lay-skin="primary" name="role_id[]" value="{$v.role_id}" title="{$v.role_name}">
+					{/in}
+				{/volist}
+			</div>
+		</fieldset>
+	</div>
+	<div class="layui-form-item">
+		<div class="layui-input-block">
+			<button class="layui-btn" lay-submit lay-filter="*">立即提交</button>
+			<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+		</div>
+	</div>
+	</form>
+	 
+<script>
+	$(function(){
+		layui.use(['form','layer'],function(){
+			var form = layui.form;
+			var layer = layui.layer;
+
+			//提交数据
+			form.on('submit(*)', function(data){
+			   $.post(
+			  		"{:url('Admin/giveRole')}",
+			  		data.field,
+			  		function(result){
+						layer.msg(result.font,{icon:result.code,time:2000},function(){
+							if(result.code==1){
+								location.href="{:url('admin/adminList')}";
+							}
+						});
+			  		}
+			  		,'json'
+			  	);
+			  return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+			});
+		});
+	})
+		
+</script>
+</div>

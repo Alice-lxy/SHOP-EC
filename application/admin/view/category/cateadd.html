@@ -1,0 +1,104 @@
+ 
+    <!-- 内容主体区域 -->
+    <div style="padding: 15px;">
+    	<h2 align="center">分类添加</h2>
+<form class="layui-form" action="">
+	  <div class="layui-form-item">
+	    <label class="layui-form-label">分类名称</label>
+	    <div class="layui-input-block">
+	      <input type="text" name="cate_name" required  lay-verify="required|checkName" placeholder="请输入分类名称" autocomplete="off" class="layui-input">
+	    </div>
+	  </div>
+	  
+	 
+	 <div class="layui-form-item">
+		<label class="layui-form-label">是否展示</label>
+		<div class="layui-input-block">
+			<input type="radio" name="cate_show" value="1" title="是">
+			<input type="radio" name="cate_show" value="2" title="否" checked>
+		</div>
+	</div>
+	  <div class="layui-form-item">
+		<label class="layui-form-label">是否在导航栏上展示</label>
+		<div class="layui-input-block">
+			<input type="radio" name="cate_navshow" value="1" title="是">
+			<input type="radio" name="cate_navshow" value="2" title="否" checked>
+		</div>
+	</div>
+	  
+	 <div class="layui-form-item">
+	    <label class="layui-form-label">父分类</label>
+	    <div class="layui-input-block">
+	      <select name="pid" lay-verify="required">
+	        <option value="0">--请选择--</option>
+	        {foreach $info as $v}
+	        	<option value="{$v.cate_id}">
+	        		{:str_repeat('&nbsp;&nbsp;',$v['level']*2)}
+	        		{$v.cate_name}
+	        	</option>
+	        {/foreach}
+	      </select>
+	    </div>
+  	</div>
+	  <div class="layui-form-item">
+	    <div class="layui-input-block">
+	      <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+	      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+	    </div>
+	  </div>
+	</form>
+	 
+	<script>
+	//Demo
+	layui.use(['form','layer'], function(){
+		var form = layui.form;
+		var layer = layui.layer;
+	  
+	  	//验证 唯一性
+	  	form.verify({
+	  		checkName:function(value,item){
+	  			var font;
+	  			$.ajax({
+					url:"{:url('Category/checkName')}",
+					method:'post',
+					data:{cate_name:value},
+					async:false,
+					success:function(msg){
+						if(msg=='no'){
+							font = '该名称已存在';
+						}
+					}
+				});
+	  			return font;
+	  		}
+	  	})
+	  	
+		//监听提交
+		form.on('submit(formDemo)', function(data){
+			$.post(
+				"{:url('Category/cateAdd')}",
+				data.field,
+				function(msg){
+					layer.msg(msg.font,{icon:msg.code})
+					if(msg.code==1){
+						layer.open({
+							type:0,
+							content:'添加成功!',
+							btn:['继续添加','展示'],
+							yes:function(index,layero){
+								location.href="{:url('category/cateAdd')}";
+								return false;
+							},
+							btn2:function(index,layero){
+								location.href="{:url('category/cateList')}";
+								return true;
+							}
+						})
+			  		}
+				},'json'
+			);
+			return false;
+		});
+	});
+	</script>
+    </div>

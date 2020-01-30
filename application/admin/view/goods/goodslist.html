@@ -1,0 +1,107 @@
+<div style="padding: 15px;">
+    <h2 align="center">商品列表展示</h2>
+    <input type="text" placeholder="请输入商品名称" id="goods_name">
+    商品分类：
+    <select id="cate_name">
+        <option value="">--请选择--</option>
+        {foreach $cate as $k=>$v}
+        <option value="{$v.cate_name}">
+            {:str_repeat('&nbsp;&nbsp;',$v['level']*2)}
+            {$v.cate_name}
+        </option>
+        {/foreach}
+    </select>
+    商品品牌：
+    <select id="brand_name">
+        <option value="">--请选择--</option>
+        {foreach $brand as $k=>$v}
+        <option value="{$v.brand_name}">{$v.brand_name}</option>
+        {/foreach}
+    </select>
+    <input type="button" value="搜索" id="btn">
+
+    <table id="demo" lay-filter = "table_edit"></table>
+</div>
+
+<script type="text/html" id="barDemo">
+  <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+  <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+
+<script>
+    $(function(){
+        layui.use(['table','layer'],function(){
+            var table = layui.table;
+            var layer = layui.layer;
+
+              //第一个实例
+            table.render({
+                elem: '#demo'
+                ,url: "{:url('Goods/getInfo')}" //数据接口
+                ,page: true //开启分页
+                ,limit: 3   //限制条数
+                ,cols: [[ //表头
+                    {field: 'goods_name', title: '商品名称',edit: 'text', width:90, sort: true, fixed: 'left'}
+                    ,{field: 'goods_selfprice', title: '本店售价',edit: 'text', width:80}
+                    ,{field: 'goods_allprice', title: '市场售价', width:80, sort: true}
+                    ,{field: 'goods_up', title: '是否上架', width:70} 
+                    ,{field: 'goods_new', title: '新品', width:70} 
+                    ,{field: 'goods_best', title: '精品', width:70} 
+                    ,{field: 'goods_hot', title: '热卖', width:70} 
+                    ,{field: 'goods_num', title: '库存',edit: 'text', width:80} 
+                    ,{field: 'goods_fen', title: '赠送积分',edit: 'text', width:80} 
+                    ,{field: 'create_time', title: '添加时间', width:120} 
+                    ,{field: 'cate_name', title: '商品分类', width:100} 
+                    ,{field: 'brand_name', title: '商品品牌', width:80}
+                    ,{fixed: 'right', title:'操作', toolbar: '#barDemo', width:120}
+                ]]
+            });
+            //监听单元格编辑   即点即改
+            table.on('edit(table_edit)', function(obj){ //注：edit是固定事件名，table_edit是table原始容器的属性 lay-filter="对应的值"
+                var value = obj.value,//得到修改后的值
+                    data = obj.data,//得到所在行的数据
+                    field = obj.field;//得到编辑的字段名
+                $.post(
+                    "{:url('Goods/goodsUpd')}",
+                    {value:value,field:field,goods_id:data.goods_id},
+                    function(msg){
+                        // console.log(msg);
+                        layer.msg(msg.font,{icon:msg.code});
+                    }
+                    ,'json'
+                )
+            });
+            //搜索
+            $('#btn').click(function(){
+                var goods_name = $('#goods_name').val();
+                var cate_name = $('#cate_name').val();
+                var brand_name = $('#brand_name').val();
+                table.reload('demo',{
+                    where:{goods_name:goods_name,cate_name:cate_name,brand_name:brand_name}
+                });
+            })
+            //监听行工具事件
+            table.on('tool(table_edit)', function(obj){
+                var data = obj.data;
+                //console.log(obj)
+                if(obj.event === 'del'){
+                    layer.confirm('您是否确认删除？',{icon:3},function(index){
+                        $.post(
+                            "{:url('Goods/goodsDel')}",
+                            {goods_id:data.goods_id},
+                            function(msg){
+                                layer.msg(msg.font,{icon:msg.code});
+                                if(msg.code==1){
+                                    table.reload('demo');
+                                }
+                            },'json'
+                        );
+                    })
+                }else if(obj.event === 'edit'){
+                    location.href="{:url('Goods/goodsUpdate')}?goods_id="+data.goods_id;
+                }
+            });
+
+        })
+    })
+</script>

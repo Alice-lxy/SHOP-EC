@@ -1,0 +1,101 @@
+<div style="padding: 15px; width: 600px">
+    <h2 align="center">角色添加</h2>
+    <form class="layui-form" action="">
+        <div class="layui-form-item">
+            <label class="layui-form-label">角色名称</label>
+            <div class="layui-input-block" style="width: 160px">
+                <input type="text" name="role_name" required  lay-verify="required" placeholder="请输入角色名称" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">权限节点</label>
+            <div class="layui-input-block">
+                {volist name="info" id='v'}
+                <fieldset>
+                    <legend>
+                        <input type="checkbox" lay-skin="primary" name="node_id[]" lay-filter="allbox" value="{$v.node_id}" title="{$v.node_name}">
+                    </legend>
+                    <div class="layui-field-box">
+                        &nbsp; &nbsp;
+                        {volist name="$v['son']" id='vv'}
+                        <input type="checkbox" lay-skin="primary" name="node_id[]" lay-filter="box" value="{$vv.node_id}" title="{$vv.node_name}">
+                        {/volist}
+                    </div>
+                </fieldset>
+                {/volist}
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+    </form>
+</div>
+<script>
+    //Demo
+    layui.use(['form'], function(){
+        var form = layui.form;
+        var layer = layui.layer;
+      //监听复选框全选
+        form.on('checkbox(allbox)', function(data){
+            //console.log(data.elem); //得到checkbox原始DOM对象
+            var is_checked = data.elem.checked//是否被选中，true或者false
+            var _this = data.othis//得到美化后的DOM对象
+            if(is_checked==true){
+                _this.parent().next().find("input").prop('checked',true);
+            }else{
+                _this.parent().next().find("input").prop('checked',false);
+            }
+            form.render();
+        });
+        //监听复选框反选
+         form.on('checkbox(box)', function(data){
+            var is_checked = data.elem.checked//是否被选中，true或者false
+            var _this = data.othis//得到美化后的DOM对象
+            if(is_checked==true){
+                _this.parent().prev().find('input').prop('checked',true);
+            }else{
+                var num=0;
+                //判断当前节点的所有兄弟节点
+                var _input = _this.siblings("input");
+                _input.each(function(index){
+                    if($(this).prop('checked')==false){
+                        num+=1;
+                    }
+                })
+                if(num==_input.length){
+                    _this.parent().prev().find("input").prop('checked',false);
+                }
+            }
+            form.render();
+        });
+        //监听提交
+        form.on('submit(formDemo)', function(data){
+            $.post(
+                "{:url('role/roleadd')}",
+                data.field,
+                function(result){
+                    layer.msg(result.font,{icon:result.code});
+                    if(result.code==1){
+                        layer.open({
+                            type:0,
+                            content:'添加成功!',
+                            btn:['继续添加','展示'],
+                            yes:function(index,layero){
+                                location.href="{:url('Role/roleAdd')}";
+                                return false;
+                            },
+                            btn2:function(index,layero){
+                                location.href="{:url('Role/roleList')}";
+                                return true;
+                            }
+                        })
+                    }
+                },'json'
+            );
+            return false;
+        });
+    });
+</script>

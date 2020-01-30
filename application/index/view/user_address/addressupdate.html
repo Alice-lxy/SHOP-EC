@@ -1,0 +1,153 @@
+{include file="public/user_top"}
+<!--End Header End--> 
+<div class="i_bg bg_color">
+    <!--Begin 用户中心 Begin -->
+	<div class="m_content">
+   		{include file="public/user_left"}
+		<div class="m_right">
+            <div class="mem_tit">
+            	<h3 style="color: #634227">修改收货地址</h3>
+            </div>
+            <table border="0" class="add_tab" style="width:930px;"  cellspacing="0" cellpadding="0">
+                <input type="hidden" value="{$address['add_id']}" id="add_id">
+                <tr>
+                <td width="135" align="right">配送地区</td>
+                <td colspan="3" style="font-family:'宋体';">
+                <select name="province" class="area" id="province">
+                    <option value="" selected="selected">请选择...</option>
+                    {foreach $provice as $k=>$v}
+                        {if condition="$v['id'] eq $address['province']"}
+                            <option value="{$v.id}" selected >{$v.name}</option>
+                        {else/}
+                            <option value="{$v.id}">{$v.name}</option>
+                        {/if}
+                    {/foreach}
+                </select>
+                <select  name="city" class="area" id="city">
+                    <option value="" selected="selected">请选择...</option>
+                    {foreach $city as $k=>$v}
+                        {if condition="$v['id'] eq $address['city']"}
+                            <option value="{$v.id}" selected>{$v.name}</option>
+                        {else/}
+                            <option value="{$v.id}">{$v.name}</option>
+                        {/if}
+                    {/foreach}
+                </select>
+                <select name="area" class="area" id="area">
+                    <option value="" selected="selected">请选择...</option>
+                    {foreach $area as $k=>$v}
+                        {if condition="$v['id'] eq $address['area']"}
+                            <option value="{$v.id}" selected>{$v.name}</option>
+                        {else/}
+                            <option value="{$v.id}">{$v.name}</option>
+                        {/if}
+                    {/foreach}
+                </select>
+                （必填）
+                </td>
+                </tr>
+                <tr>
+                <td align="right">收货人姓名</td>
+                <td style="font-family:'宋体';">
+                <input type="text" class="add_ipt" name="add_name" id="add_name" value="{$address.add_name}"/>（必填）
+                </td>
+                <td align="right">详细地址</td>
+                <td style="font-family:'宋体';">
+                  <input type="text" class="add_ipt" name="add_ress" id="add_ress" value="{$address.add_ress}"/>（必填）
+                </td>
+                </tr>
+                <tr>
+                <td align="right">手机号</td>
+                <td style="font-family:'宋体';">
+                <input type="text" class="add_ipt" name="add_tel" id="add_tel" value="{$address.add_tel}"/>（必填）
+                </td>
+                <td align="right">最佳送货时间</td>
+                <td style="font-family:'宋体';">
+                <input type="text" class="add_ipt" name="send_time" id="send_time" value="{$address.send_time}"/>
+                </td>
+                </tr>
+                <tr>
+                <td colspan="4" align="right">
+                {if condition="$address['is_default'] eq 1"}
+                <input type="checkbox" value="1" class="is_default" checked> 是否设置为默认地址
+                {else/}
+                <input type="checkbox" value="1" class="is_default"> 是否设置为默认地址
+                {/if}
+                </td>
+                </tr>
+            </table>
+           	<p align="right">
+            	<a href="#" class="add_b">修改</a>
+            </p>
+        </div>
+    </div>
+ </div>
+	<!--End 用户中心 End-->
+    <script>
+        $(function(){
+            layui.use(['layer'],function(){
+                var layer = layui.layer;
+                //三级联动
+                $('.area').change(function(){
+                    var _this = $(this)
+                    _this.nextAll('select').html("<option value='0'>请选择...</option>");
+                    var id = _this.val();//获取对应的id
+                    $.post(
+                            "{:url('user_address/getArea')}",
+                            {id:id},
+                            function(result){
+                                var _option = "<option value='0'>请选择...</option>";
+                                for(var i in result){
+                                    _option += "<option value='"+result[i]['id']+"'>"+result[i]['name']+"</option>"
+                                }
+                                _this.next('select').html(_option);
+                            }
+                            ,'json'
+                    );
+                })
+                //监听表单提交
+                $('.add_b').click(function(){
+                    var province = $('#province').val();
+                    var city = $('#city').val();
+                    var area = $('#area').val();
+                    var add_name = $('#add_name').val();
+                    var add_ress = $('#add_ress').val();
+                    var add_tel = $('#add_tel').val();
+                    var send_time = $('#send_time').val();
+                    var add_id = $('#add_id').val();
+                    var is_default = $('.is_default').is(':checked');
+                    if(is_default==true){
+                        is_default=1
+                    }else{
+                        is_default=2
+                    }
+                    var reg = /^1[3-8]\d{9}$/;
+                    if(province==''){
+                        layer.msg('请选择配送地址',{icon:2});
+                    }else if(city==''){
+                        layer.msg('请选择配送地址',{icon:2});
+                    }else if(area==''){
+                        layer.msg('请选择配送地址',{icon:2});
+                    }else if(add_name==''){
+                        layer.msg('姓名必填',{icon:2});
+                    }else if(add_ress==''){
+                        layer.msg('详细地址必填',{icon:2});
+                    }else if(add_tel==''||!reg.test(add_tel)){
+                        layer.msg('请输入正确格式的手机号',{icon:2});
+                    }else{
+                        $.post(
+                                "{:url('user_address/addressupdate')}",
+                                {province:province,city:city,area:area,add_name:add_name,add_ress:add_ress,add_tel:add_tel,send_time:send_time,is_default:is_default,add_id:add_id},
+                                function(msg){
+                                    layer.msg(msg.font,{icon:msg.code});
+                                    if(msg.code==1){
+                                        location.href="{:url('user_address/address')}";
+                                    }
+                                }
+                                ,'json'
+                        );
+                    }
+                })
+            })
+        })
+    </script>

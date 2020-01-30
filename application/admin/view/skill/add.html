@@ -1,0 +1,56 @@
+<div style="padding: 15px; width:900px">
+	<form action="" method="post">
+		<table>
+			<div>
+				<font color="#785379">新加班级</font>:
+				<input type="button" value="+" class="add" style="width: 20px">
+			</div>
+			<div id="div"></div>
+		</table>
+			<input type="button" value="保存">
+	</form>
+</div>
+<script>
+	$(function(){
+		layui.use('layer',function(){
+			var layer = layui.layer;
+
+			$(document).on('click','.add',function(){
+				var _this = $(this);//add
+				// var value = $(this).val();
+				var _tr =
+					"<div class='div_test'>"+
+					    "班级名称:"+
+						"<input type='text' name='class_name' placeholder='请输入班级'/>"+
+						"<input type='button' value='添加学生' class='stu_add'/>"+
+						"<input type='button' value='删除班级' class='class_del'/>"+
+					"</div>";
+				$('#div').append(_tr);
+			})
+			$(document).on('click','.stu_add',function(){
+				var _this = $(this);//stu_add
+				var _input = 
+							"<div class='role'>"+
+								"学生姓名:"+
+								"<input type='text' name='stu_name' placeholder='请输入学生姓名'/>"+
+								"<input type='button' value='删除学生' class='stu_del'/>"+
+							"</div>";
+				_this.parent().append(_input);
+			})
+			//删除学生
+			$(document).on('click','.stu_del',function(){
+				var _this = $(this);//stu+del
+				_this.parent().remove();
+			})
+			//删除班级
+			$(document).on('click','.class_del',function(){
+				var _this = $(this);//class_del
+				_this.parent().remove();
+			})
+
+
+			
+
+		})
+	})
+</script>

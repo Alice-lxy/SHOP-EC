@@ -1,0 +1,84 @@
+   <!-- 内容主体区域 -->
+    <div style="padding: 15px;">
+    	<h2 align="center">友链添加</h2>
+<form class="layui-form" action="">
+	<div class="layui-form-item">
+		<label class="layui-form-label">友链名称</label>
+		<div class="layui-input-block"><!--   -->
+			<input type="text" name="friend_name" required lay-verify="required|checkName" autocomplete="off" class="layui-input">
+		</div>
+	</div>
+	<div class="layui-form-item">
+		<label class="layui-form-label">网址</label>
+		<div class="layui-input-block"><!--  -->
+			<input type="text" name="friend_url" required lay-verify="required|url" autocomplete="off" class="layui-input">
+		</div>
+	</div>
+	<div class="layui-form-item">
+		<div class="layui-input-block">
+			<button class="layui-btn" lay-submit lay-filter="*">立即提交</button>
+			<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+		</div>
+	</div>
+</form>	 
+<script>
+	$(function(){
+		layui.use(['form','layer'],function(){
+			var form = layui.form;
+			var layer = layui.layer;
+
+			form.verify({
+				checkName: function(value, item){ //value：表单的值、item：表单的DOM对象
+					var reg =/^[a-z_]\w{2,9}|[\u4e00-\u9fa5]{2,}$/u;
+					var font;
+					if(!reg.test(value)){
+						return "友链名称由数字、字母、下划线且不以数字开头3-10位，或不小于两位汉字组成";
+					}else{
+						$.ajax({
+							url:"{:url('Friend/checkName')}",
+							method:'post',
+							data:{friend_name:value},
+							async:false,
+							success:function(msg){
+								if(msg=='no'){
+									font = '该名称已存在';
+								}
+							}
+						});
+						return font;
+					}
+				},
+			})
+
+			//提交数据
+			form.on('submit(*)', function(data){
+			  $.post(
+			  		"{:url('Friend/friendAdd')}",
+			  		data.field,
+			  		function(result){
+			  			// console.log(result);
+			  			layer.msg(result.font,{icon:result.code});
+			  			if(result.code==1){
+							layer.open({
+								type:0,
+								content:'添加成功!',
+								btn:['继续添加','展示'],
+								yes:function(index,layero){
+									location.href="{:url('friend/friendAdd')}";
+									return false;
+								},
+								btn2:function(index,layero){
+									location.href="{:url('friend/friendList')}";
+									return true;
+								}
+							})
+			  			}
+			  		},
+			  		'json'
+			  	);
+			  return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+			});
+		})
+	})
+</script>
+</div>

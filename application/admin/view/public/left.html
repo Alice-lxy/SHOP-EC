@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+    </head>
+    <body>
+    	  <div class="layui-side layui-bg-black">
+    <div class="layui-side-scroll">
+      <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+      <ul class="layui-nav layui-nav-tree"  lay-filter="test">
+        <li class="layui-nav-item ">
+          <a class="" href="javascript:;">分类管理</a>
+          <dl class="layui-nav-child">
+            <dd><a href="{:url('Category/cateAdd')}">分类添加</a></dd>
+            <dd><a href="{:url('Category/cateList')}">分类展示</a></dd>
+          </dl>
+        </li>
+        <li class="layui-nav-item">
+          <a href="javascript:;">品牌管理</a>
+          <dl class="layui-nav-child">
+            <dd><a href="{:url('Brand/brandAdd')}">品牌添加</a></dd>
+            <dd><a href="{:url('Brand/brandList')}">品牌展示</a></dd>
+          </dl>
+        </li>
+        <li class="layui-nav-item">
+          <a href="javascript:;">商品管理</a>
+          <dl class="layui-nav-child">
+            <dd><a href="{:url('Goods/goodsAdd')}">商品添加</a></dd>
+            <dd><a href="{:url('Goods/goodsList')}">商品展示</a></dd>
+          </dl>
+        </li>
+        <li class="layui-nav-item"><!-- $_SESSION['admin_name'] -->  
+          <a href="javascript:;">管理员管理</a>
+          <dl class="layui-nav-child">
+            <dd><a href="{:url('Admin/adminAdd')}">管理员添加</a></dd>
+            <dd><a href="{:url('Admin/adminList')}">管理员展示</a></dd>
+          </dl>
+        </li>
+        <li class="layui-nav-item">
+          <a href="javascript:;">友链管理</a>
+          <dl class="layui-nav-child">
+            <dd><a href="{:url('Friend/friendAdd')}">友链添加</a></dd>
+            <dd><a href="{:url('Friend/friendList')}">友链展示</a></dd>
+          </dl>
+        </li>
+        <li class="layui-nav-item">
+          <a href="javascript:;">角色管理</a>
+          <dl class="layui-nav-child">
+            <dd><a href="{:url('role/roleadd')}">角色添加</a></dd>
+            <dd><a href="{:url('role/rolelist')}">角色展示</a></dd>
+          </dl>
+        </li>
+        <li class="layui-nav-item">
+          <a href="javascript:;">节点管理</a>
+          <dl class="layui-nav-child">
+            <dd><a href="{:url('Node/nodeAdd')}">节点添加</a></dd>
+            <dd><a href="{:url('node/nodelist')}">节点展示</a></dd>
+          </dl>
+        </li>
+        <li class="layui-nav-item">
+          <a href="javascript:;">系统设置</a>
+          <dl class="layui-nav-child">
+            <dd><a href="{:url('System/system')}">网站设置</a></dd>
+            <dd><a href="{:url('Admin/updatePwd')}">修改密码</a></dd>
+          </dl>
+        </li>
+      </ul>
+    </div>
+  </div>
+    </body>
+</html>

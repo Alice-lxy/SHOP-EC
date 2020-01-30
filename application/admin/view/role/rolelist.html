@@ -1,0 +1,53 @@
+<div style="padding: 15px; width:900px; cursor: pointer;">
+    <h2 align="center">角色列表展示</h2>
+    <table class="layui-table" id="demo">
+        <thead>
+        <tr>
+            <th>角色id</th>
+            <th>角色名称</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        {foreach $roleInfo as $v}
+        <tr>
+            <th>{$v.role_id}</th>
+            <th>{$v.role_name}</th>
+            <th>
+                <a href="javascript:;" class="del" role_id="{$v.role_id}">删除</a>
+                <a href="{:url('Role/roleUpdate')}?role_id={$v.role_id}">修改</a>
+            </th>
+        </tr>
+        {/foreach}
+        </tbody>
+    </table>
+</div>
+<script>
+    $(function() {
+        layui.use(['layer','table'],function (){
+            var table = layui.table;
+            var layer = layui.layer;
+
+            //删除
+            $('.del').click(function(){
+                var _this = $(this);
+                var role_id = _this.attr('role_id');
+                layer.confirm('是否确认删除？',{icon:3},function(index){
+                    $.post(
+                        "{:url('Role/roleDel')}",
+                        {role_id:role_id},
+                        function(msg){
+                           // console.log(msg);
+                            layer.msg(msg.font,{icon:msg.code,time:2000},function(){
+                                if(msg.code==1){
+                                    _this.parents('tr').remove();
+                                }
+                            });
+                        }
+                        ,'json'
+                    );
+                });
+            })
+        })
+    })
+</script>

@@ -1,0 +1,82 @@
+<div style="padding: 15px; width:900px">
+<!-- <form action="{:url('Exam/examInsert')}" method="post"> -->
+	<form class="layui-form" action="">
+	<table>
+		<thead>
+		<tr align="center">
+				<td>学生姓名</td>
+				<td>学生年龄</td>
+				<td>学生性别</td>
+				<td>符号</td>
+			</tr>
+		</thead>
+		<!-- <tr>
+			<td><input type="text" name="username[]"></td>
+			<td><input type="text" name="age[]"></td>
+			<td><input type="text" name="sex[]"></td>
+			<td><input type="button" value="+" style="width: 30px;" class="btn"></td>
+		</tr> -->
+		<tbody id="show">
+			<tr>
+				<td><input type="text" name="username"></td>
+				<td><input type="text" name="age"></td>
+				<td><input type="text" name="sex"></td>
+				<td><input type="button" value="+" style="width: 30px;" class="btn"></td>
+			</tr>
+		</tbody>
+	</table>
+	<input type="submit" value="保存" class="add" style='width: 80px; background-color: #256678; border: 2px #872941 solid'>
+	</form>
+<!-- </form> -->
+</div>
+<script>
+	$(function(){
+		layui.use(['form','layer'],function(){
+			var form = layui.form;
+			var layer = layui.layer;
+			//+-
+			$(document).on('click','.btn',function(){
+				var _this = $(this);//+
+				var _value = _this.val();
+				if(_value=='+'){
+					var _tr = _this.parents('tr').clone();
+					_this.parents('tr').after(_tr);
+					_this.val('-');
+				}else{
+					//删除
+					_this.parents('tr').remove();
+				}
+			})
+			//
+			
+			$(document).click(function(){
+				var _tr = $('#show').find('tr');
+				//找到每个tr中的input
+				var str="";
+				for(var i=0;i<_tr.length;i++){
+					var _input = _tr.eq(i).find("input[name]");
+					// console.log(_input)
+					for(var g=0;g<_input.length;g++){
+						var n = _input.eq(g).prop('name');
+						// console.log(n); 字段名
+						var v = _input.eq(g).val();
+						// console.log(v);//值
+						str+=n+":"+v+",";
+					}
+					str+="|";
+					// console.log(str);
+				}
+				$.post(
+					"{:url('Exam/examInsert')}",
+					{str:str},
+					function(msg){
+						// layer.msg(msg.font,{icon:msg.code});
+						console.log(msg);
+					}
+				);
+			})
+		})
+		
+
+	})
+</script>

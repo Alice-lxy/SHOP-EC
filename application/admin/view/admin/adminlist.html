@@ -1,0 +1,73 @@
+<div style="padding: 15px; width:760px">
+    <h2 align="center">管理员列表展示</h2>
+	<table id="demo" lay-filter = "table_edit"></table>
+</div>
+
+<script type="text/html" id="barDemo">
+	<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+	<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+	<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="giveRole">编辑角色</a>
+</script>
+<script>
+	$(function(){
+		layui.use(['table','layer'],function(){
+			var table = layui.table;
+			var layer = layui.layer;
+			//表格载入
+			table.render({
+			    elem: '#demo'
+			    ///,height: 312
+			    ,url: "{:url('Admin/getAdminInfo')}" //数据接口
+			    ,page: true //开启分页
+			    ,limit:3
+			    ,cols: [[ //表头
+			      {field: 'admin_id', title: 'ID', width:60, sort: true, fixed: 'left'}
+			      ,{field: 'admin_name', title: '管理员名称', width:80}
+			      ,{field: 'admin_email', title: '邮箱', edit: 'text',width:140}
+			      ,{field: 'admin_tel', title: '手机号', edit: 'text',width:120} 
+			      ,{field: 'create_time', title: '添加时间', width:160} 
+			      ,{fixed: 'right', title:'操作', toolbar: '#barDemo', width:192}
+			    ]]
+			});
+			//监听单元格编辑  即点即改
+			table.on('edit(table_edit)',function(obj){
+				var value = obj.value//得到修改后的值
+					,admin_id = obj.data.admin_id//得到所在行的所有键值data = obj.data
+					,field = obj.field;//得到字段
+				$.post(
+						"{:url('Admin/adminUpdate')}",
+						{value:value,field:field,admin_id:admin_id},
+						function(msg){
+							layer.msg(msg.font,{icon:msg.code});
+						}
+						,'json'
+					)
+			})
+			//监听工具条 删除.编辑
+			table.on('tool(table_edit)',function(obj){
+				var data = obj.data;//获得当前数据
+				if(obj.event==='del'){
+					//是否确认删除？
+					layer.confirm('是否确认删除？',{icon:3},function(index){
+						$.post(
+							"{:url('Admin/adminDel')}",
+							{admin_id:data.admin_id},
+							function(msg){
+								layer.msg(msg.font,{icon:msg.code});
+								if(msg.code==1){
+									table.reload('demo');//重载表格
+								}
+							},'json'
+						);
+					});
+				}else if(obj.event==='edit'){
+					location.href="{:url('admin/adminUpd')}?admin_id="+data.admin_id;
+				}else if(obj.event==='giveRole'){
+					location.href="{:url('admin/giveRole')}?admin_id="+data.admin_id;
+				}
+
+			})
+		});
+
+	})
+</script>

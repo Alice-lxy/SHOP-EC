@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+<form class="layui-form" action="">
+	<div id="box">
+		<div>
+			&nbsp;&nbsp;&nbsp;&nbsp;
+			&nbsp;&nbsp;&nbsp;&nbsp;
+			&nbsp;&nbsp;&nbsp;&nbsp;
+			学生姓名
+			&nbsp;&nbsp;&nbsp;&nbsp;
+			&nbsp;&nbsp;&nbsp;&nbsp;
+			&nbsp;&nbsp;&nbsp;&nbsp;
+			&nbsp;&nbsp;&nbsp;&nbsp;
+			&nbsp;&nbsp;&nbsp;&nbsp;
+			学生年龄
+			&nbsp;&nbsp;&nbsp;&nbsp;
+			&nbsp;&nbsp;&nbsp;&nbsp;
+			&nbsp;&nbsp;&nbsp;&nbsp;
+			&nbsp;&nbsp;&nbsp;&nbsp;
+			&nbsp;&nbsp;&nbsp;&nbsp;
+			&nbsp;&nbsp;&nbsp;&nbsp;
+			学生性别	
+		</div>
+		<div>
+			<input type="text" name="username" id="username">
+			<input type="text" name="age" id="age">
+			<input type="text" name="sex" id="sex">
+			<a href="javascript:;" class="add">+</a>
+		</div>
+	</div>
+		 <button class="layui-btn" lay-submit lay-filter="formDemo">保存</button>
+</form>
+</body>
+</html>
+<script>
+$(function(){
+	layui.use(['form','layer'],function(){
+		var form = layui.form;
+		var layer = layui.layer;
+		//+-
+		$(document).on('click','.add',function(){
+			var _this = $(this);//a
+			// console.log(_this);
+			var _add = _this.text();
+
+			if(_add=='+'){
+				var _div = $('#box').children('div').last();
+				var _box = _div.clone();
+				_this.parent().after(_box);
+				_div.find("a[class='add']").text('-');
+			}else{
+				var _this = $(this);
+				_this.parent().remove();
+			}
+		})
+		//提交
+		form.on('submit(formDemo)',function(data){
+			$.post(
+				"{:url('Exam/add')}",
+				data.field,
+				function(msg){
+					console.log(msg);
+				}
+			)
+			return false;
+		})
+	})
+})
+</script>
