@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:5:{s:78:"/data/wwwroot/default/shop/public/../application/index/view/cart/cartlist.html";i:1576893235;s:71:"/data/wwwroot/default/shop/public/../application/index/view/layout.html";i:1545033943;s:76:"/data/wwwroot/default/shop/public/../application/index/view/public/head.html";i:1545035142;s:75:"/data/wwwroot/default/shop/public/../application/index/view/public/top.html";i:1545111788;s:78:"/data/wwwroot/default/shop/public/../application/index/view/public/footer.html";i:1545035142;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:5:{s:78:"/data/wwwroot/default/shop/public/../application/index/view/cart/cartlist.html";i:1576893235;s:71:"/data/wwwroot/default/shop/public/../application/index/view/layout.html";i:1545033943;s:76:"/data/wwwroot/default/shop/public/../application/index/view/public/head.html";i:1545035142;s:75:"/data/wwwroot/default/shop/public/../application/index/view/public/top.html";i:1576893892;s:78:"/data/wwwroot/default/shop/public/../application/index/view/public/footer.html";i:1545035142;}*/ ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -204,7 +204,7 @@
                     </li>
                 <?php else: if(is_array($cartInfo) || $cartInfo instanceof \think\Collection || $cartInfo instanceof \think\Paginator): $i = 0; $__LIST__ = $cartInfo;if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$v): $mod = ($i % 2 );++$i;?>
                     <li>
-                        <div class="img"><a href="#"><img src="/shop/public/goodsimg/<?php echo $v['goods_img']; ?>" width="58" height="58" /></a></div>
+                        <div class="img"><a href="#"><img src="/goodsimg/<?php echo $v['goods_img']; ?>" width="58" height="58" /></a></div>
                         <div class="name"><a href="#"><?php echo $v['goods_name']; ?></a></div>
                         <div class="prices">
                             <font color="#ff4e00">￥<?php echo $v['goods_selfprice']; ?></font>
